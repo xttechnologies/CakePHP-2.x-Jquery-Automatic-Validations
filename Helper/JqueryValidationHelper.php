@@ -1,10 +1,10 @@
 <?php
 /**
- * Author : Xttechnologies
+ * Author : XT Technologies
  * Created : 3 Aug, 2012
  * JqueryValidation helper
  *
- * @package       app.View.Helper
+ * @package app.View.Helper
  * required Jquery 1.7.2
  * Jquery Validation files http://bassistance.de/jquery-plugins/jquery-plugin-validation/
  * filename :
@@ -57,19 +57,24 @@ class JqueryValidationHelper extends AppHelper {
 		$rules = $this->getModelValidationRules($this->getModels());
 		
 		$ruleScript = '';
+		$messageScript ='';
 		
 		foreach($rules as $rule){
 			foreach($rule as $model => $fields){
 				foreach($fields as $fieldName => $rules){
 					$ruleScript .= "'data[{$model}][{$fieldName}]':" ;
-					$ruleScript .= $this->__convertRule($rules);					
+					$ruleScript .= $this->__convertRule($rules);
+
+					$messageScript .= "'data[{$model}][{$fieldName}]':";
+					$messageScript .= $this->__convertMessage($rules);
 				}
 			}
 		}
 		
 		$validationScript = "$(function(){
 			$('form').validate({
-				rules: {" . $ruleScript . "}
+				rules: {" . $ruleScript . "},
+				messages: {" . $messageScript ."} 
 			});	
 		});";
 		return $this->Html->scriptBlock($validationScript);
@@ -81,6 +86,7 @@ class JqueryValidationHelper extends AppHelper {
 	function __convertRule($rules = array()) {
 		
 		$fieldRulesScript = '{';
+		
 		foreach($rules as $ruleDetails){
 			switch ($ruleDetails['rule'][0]) {
 				case 'between':
@@ -116,5 +122,56 @@ class JqueryValidationHelper extends AppHelper {
 		}
 		$fieldRulesScript .= '},';
 		return $fieldRulesScript;
+	}
+	
+	/*
+	 *
+	*/
+	function __convertMessage($rules = array()) {
+	
+		$fieldMessageScript = '{';
+		
+		foreach($rules as $ruleDetails){
+			switch ($ruleDetails['rule'][0]) {
+				case 'between':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'range: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'notempty':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'required: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'minlength':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'minlength: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'date':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'date: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'ip':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'ipv4: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'money':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'digits: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'url':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'url: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'email':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'email: "'. $ruleDetails['message'] .'",';
+					break;
+				case 'phone':
+					if(isset($ruleDetails['message']))
+						$fieldMessageScript .= 'number: "'. $ruleDetails['message'] .'",';
+					break;
+			}
+		}
+		$fieldMessageScript .= '},';
+		return $fieldMessageScript;
 	}
 }

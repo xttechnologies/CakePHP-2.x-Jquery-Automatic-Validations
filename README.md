@@ -1,6 +1,13 @@
 CakePHP-2.x-Jquery-Automatic-Validations
 ========================================
 
+Version 1.1
+-----------
+
+It will detect the messages from models for validations if defined else it shows its own messages.
+
+Version 1.0
+-----------
 CakePHP 2.x Automatic Jquery Validations with Jquery Validator
 
 The JqueryValidationHelper uses jQuery Validation Plugin.
